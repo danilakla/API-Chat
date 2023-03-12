@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using API_Chat.Data;
+using API_Chat.DTO.Contact;
+using API_Chat.DTO.Conversation;
+using API_Chat.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Caching.Distributed;
@@ -15,54 +19,36 @@ namespace API_Chat.Controllers
     [ApiController]
     public class ChatContorller : ControllerBase
     {
-        private readonly IDistributedCache distributedCache;
 
-        public ChatContorller(IDistributedCache distributedCache)
+
+        private readonly IDistributedCache distributedCache;
+        private readonly ApplicationContext db;
+
+        public ChatContorller(IDistributedCache distributedCache,ApplicationContext db )
         {
             this.distributedCache = distributedCache;
-        }
-        public List<Frind> frinds { get; set; } = new List<Frind>()
-        {
-
-            new Frind(){EmailOfFriend="Test"},
-            new Frind(){EmailOfFriend="dany"},
-                        new Frind(){EmailOfFriend="First"},
-
-        };
-
-
-        [HttpGet("test123")]
-
-
-        public async Task<IActionResult> TestMy()
-
-        {
-            CancellationToken cancellationToken = default;
-            await distributedCache.SetStringAsync("toti", JsonConvert.SerializeObject(new List<Frind> {       new Frind(){EmailOfFriend="Test"},
-            new Frind(){EmailOfFriend="dany"},
-                        new Frind(){EmailOfFriend="First"}}
-            ), default);
-            var res = await distributedCache.GetStringAsync("toti");
-            var d = JsonConvert.DeserializeObject<List<Frind>>(res);
-
-            return Ok(new { result = d});
-
-        }
-        [HttpPost("add-friend")]
-
-        public async Task<IActionResult> AddFriend(Frind frind)
-        {
-            var newn = frinds.FirstOrDefault(e => e.EmailOfFriend.Contains(frind.EmailOfFriend));
-
-            return Ok(newn);
+            this.db = db;
         }
 
 
-        [HttpGet("load-message")]
-        public async Task<IActionResult> AddFriend(string conversationName)
+        [HttpPost("createProfile")]
+        public async Task<IActionResult> CreateContact(CreateContactsDto createContactsDto)
         {
-
+            try
+            {
+            db.Contacts.Add(new Contacts { Name = createContactsDto.Name });
+            await db.SaveChangesAsync();
             return Ok();
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
         }
+
+
+
     }
 }

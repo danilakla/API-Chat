@@ -111,7 +111,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("M");
-app.MapHub<Test>("/chathub");
+app.MapHub<Chat>("/chathub");
 app.MapControllers();
 
 app.Run();
