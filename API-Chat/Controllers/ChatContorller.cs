@@ -32,7 +32,7 @@ namespace API_Chat.Controllers
 
 
         [HttpPost("createProfile")]
-        public async Task<IActionResult> CreateContact(CreateContactsDto createContactsDto)
+        public async Task<IActionResult> CreateContact(CreateContactsDto   createContactsDto)
         {
             try
             {

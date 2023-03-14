@@ -35,13 +35,13 @@ namespace API_Chat.Controllers
                 {
                     if (friend.Name != user)
                     {
-                        friendList.Add(new CreateFriendDto { EmailOfFriend = friend.Name });
+                        friendList.Add(new CreateFriendDto { Name = friend.Name });
                     }
                 }
             }
 
 
-            return friendList.DistinctBy(e => e.EmailOfFriend).ToList();
+            return friendList.DistinctBy(e => e.Name).ToList();
         }
         [HttpPost("add-friend")]
         public async Task<IActionResult> AddFriend(CreateConversationDto createConversationDto)

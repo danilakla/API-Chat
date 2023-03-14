@@ -2,6 +2,6 @@
 {
     public class CreateFriendDto
     {
-        public string EmailOfFriend { get; set; }
+        public string Name { get; set; }
     }
 }
