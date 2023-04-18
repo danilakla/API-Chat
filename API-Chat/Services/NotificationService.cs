@@ -1,6 +1,7 @@
 ﻿using API_Chat.Data;
 using API_Chat.DTO;
 using API_Chat.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_Chat.Services
 {
@@ -18,27 +19,28 @@ namespace API_Chat.Services
 		{
 			return new() { FromWhom=createNotificationDTO.FromWhom,MessageText=createNotificationDTO.MessageBody, };
 		}
-		public async void SendNotification(CreateNotificationDTO createNotificationDTO)
+		public async Task SendNotification(CreateNotificationDTO createNotificationDTO)
 		{
 			try
 			{
-				var user=await applicationContext.Contacts.FindAsync(createNotificationDTO.FriendId);
+				var user = await applicationContext.Contacts.Include(e => e.Notifications).Where(e=>e.Id==createNotificationDTO.FriendId).FirstOrDefaultAsync();
 				var friends = await friendService.GetFriends(user.Email);
-				foreach (var item in friends)
-				{
-					if (item.Email.Equals(createNotificationDTO.FromWhom)) {
-						throw new Exception("had yeat");
-					};
+				if(friends is not null) { 
 				}
+			
 
 				var Interfriends = await friendService.GetFriends(createNotificationDTO.FromWhom);
-				foreach (var item in Interfriends)
+				if(Interfriends is not null)
 				{
-					if (item.Email.Equals(user.Email))
+					foreach (var item in Interfriends)
 					{
-						throw new Exception("had yeat initat");
-					};
+						if (item.Email.Equals(user.Email))
+						{
+							throw new Exception("had yeat initat");
+						};
+					}
 				}
+					
 				var notificaiton = PrepareForDatabase(createNotificationDTO);
 				user.Notifications.Add(notificaiton);
 				await applicationContext.SaveChangesAsync();
@@ -54,7 +56,7 @@ namespace API_Chat.Services
 		{
 			try
 			{
-				var user=await applicationContext.Contacts.FindAsync(email);
+				var user = await applicationContext.Contacts.Include(e=>e.Notifications).Where(e => e.Email.Equals(email)).FirstOrDefaultAsync();
 				return user.Notifications;
 			}
 			catch (Exception)

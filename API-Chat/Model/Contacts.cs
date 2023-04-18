@@ -16,8 +16,8 @@ namespace API_Chat.Model
 
 
         public List<Conversations> Conversations { get; set; } = new();
-
-        public List<Notifications> Notifications{ get; set; }
+        
+        public List<Notifications> Notifications{ get; set; }=new();
 
     }
 }

@@ -2,6 +2,7 @@
 using API_Chat.Data;
 using API_Chat.Extensions;
 using API_Chat.Hubs;
+using API_Chat.Infrastucture;
 using API_Chat.IntegrationEvents.EventHandling;
 using API_Chat.IntegrationEvents.Events;
 using Autofac.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<ApplicationContext>(opt =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IdentityClaimsService>();
 builder.Services.AddIntegrationServices(builder.Configuration);
 builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddStackExchangeRedisCache(redisOptions =>

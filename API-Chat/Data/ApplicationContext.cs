@@ -1,5 +1,4 @@
-﻿using API_Chat.DTO;
-using API_Chat.Model;
+﻿using API_Chat.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Chat.Data

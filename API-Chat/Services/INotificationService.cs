@@ -6,6 +6,6 @@ namespace API_Chat.Services
 	public interface INotificationService
 	{
 		Task<List<Notifications>>GetNotifications(string email);
-		void SendNotification(CreateNotificationDTO  createNotificationDTO);
+		Task SendNotification(CreateNotificationDTO  createNotificationDTO);
 	}
 }

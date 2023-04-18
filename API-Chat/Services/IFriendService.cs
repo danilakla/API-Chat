@@ -3,7 +3,7 @@ using API_Chat.Model;
 
 namespace API_Chat.Services
 {
-	public interface IFriendService
+    public interface IFriendService
 	{
 		Task AddFriend(AcceptNoficationDTO acceptNoficationDTO);
 		Task<List<FriendDTO>> GetFriends(string email);
