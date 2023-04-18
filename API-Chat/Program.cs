@@ -72,10 +72,10 @@ builder.Services.AddAuthentication(options =>
             }
             var test = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;
-            if (!string.IsNullOrEmpty(accessToken) &&
+            if (!string.IsNullOrEmpty(test) &&
                 (path.StartsWithSegments("/chathub")))
             {
-                context.Token = accessToken;
+                context.Token = test;
             }
             return Task.CompletedTask;
         }
@@ -107,17 +107,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.Use(async (context, next) =>
-//{
-//    //var accessToken = context.Request.Query["access_token"];
-//    var testAccessToken = context.Request.Headers.Authorization;
-//    if (!string.IsNullOrEmpty(testAccessToken))
-//    {
-//        context.Request.Headers["Authorization"] = testAccessToken;
-//    }
+app.Use(async (context, next) =>
+{
+    //var accessToken = context.Request.Query["access_token"];
+    var testAccessToken = context.Request.Headers.Authorization;
+    if (!string.IsNullOrEmpty(testAccessToken))
+    {
+        context.Request.Headers["Authorization"] = testAccessToken;
+    }
 
-//    await next.Invoke().ConfigureAwait(false);
-//});
+    await next.Invoke().ConfigureAwait(false);
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

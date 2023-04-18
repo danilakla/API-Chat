@@ -19,7 +19,7 @@ namespace API_Chat.Controllers
 			this.contactService = contactService;
 		}
 		[HttpGet("/get-contacts")]
-		public async Task<List<Contacts>> GetContacts(string name, string lastName)
+		public async Task<List<Contacts>> GetContacts(string? name="", string?lastName="")
 		{
 			try
 			{

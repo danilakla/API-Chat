@@ -13,17 +13,40 @@ namespace API_Chat.Services
 		{
 			this.applicationContext = applicationContext;
 		}
-	
+
 		public async Task<List<Contacts>> GetContacts(FindContactsDTO findContactsDTO)
 		{
 			try
 			{
-				List<Contacts> contacts = await applicationContext.Contacts
-					   .Where(e =>
-					   e.Name.ToLower().Contains(findContactsDTO.Name.ToLower())
-					   &&
-					   e.LastName.ToLower().Contains(findContactsDTO.LastName.ToLower()))
-					   .ToListAsync();
+				List<Contacts> contacts=new();
+				if (string.IsNullOrEmpty(findContactsDTO.LastName) && string.IsNullOrEmpty(findContactsDTO.Name))
+				{
+					contacts = await applicationContext.Contacts.Take(3).ToListAsync();
+				}
+				if ((!string.IsNullOrEmpty(findContactsDTO.LastName)) && string.IsNullOrEmpty(findContactsDTO.Name))
+				{
+					contacts = await applicationContext.Contacts
+					 .Where(e => e.LastName.ToLower().Contains(findContactsDTO.LastName.ToLower()))
+					 .ToListAsync();
+
+
+				}
+				if ((!string.IsNullOrEmpty(findContactsDTO.Name)) && string.IsNullOrEmpty(findContactsDTO.LastName))
+				{
+					contacts = await applicationContext.Contacts
+				 .Where(e => e.Name.ToLower().Contains(findContactsDTO.Name.ToLower()))
+				 .ToListAsync();
+				}
+				if((!string.IsNullOrEmpty(findContactsDTO.LastName)) && (!string.IsNullOrEmpty(findContactsDTO.Name)))
+				{
+					contacts = await applicationContext.Contacts
+				   .Where(e =>
+				   e.Name.ToLower().Contains(findContactsDTO.Name.ToLower())
+				   &&
+				   e.LastName.ToLower().Contains(findContactsDTO.LastName.ToLower()))
+				   .ToListAsync();
+				}
+			
 
 				return contacts;
 			}
