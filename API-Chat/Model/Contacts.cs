@@ -7,7 +7,13 @@ namespace API_Chat.Model
         [Key]
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public List<Contacts> FriendContact { get; set; } = new();
+		public string LastName{ get; set; } = string.Empty;
+		public string Email{ get; set; } = string.Empty;
+		public string BroadcastText { get; set; } = string.Empty;
+
+		public byte [] Photo { get; set; }
+
+
 
         public List<Conversations> Conversations { get; set; } = new();
 

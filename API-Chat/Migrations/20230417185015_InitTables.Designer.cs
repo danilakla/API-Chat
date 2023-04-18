@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API_Chat.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230311201530_InitTable")]
-    partial class InitTable
+    [Migration("20230417185015_InitTables")]
+    partial class InitTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,16 +32,27 @@ namespace API_Chat.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("ContactsId")
-                        .HasColumnType("int");
+                    b.Property<string>("BroadcastText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<byte[]>("Photo")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
-                    b.HasIndex("ContactsId");
+                    b.HasKey("Id");
 
                     b.ToTable("Contacts");
                 });
@@ -55,6 +66,13 @@ namespace API_Chat.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ConversationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsGroup")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RoomName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -77,6 +95,9 @@ namespace API_Chat.Migrations
                     b.Property<string>("FromWhom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("message_text")
                         .IsRequired()
@@ -108,7 +129,7 @@ namespace API_Chat.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ToWhom")
+                    b.Property<string>("RoomName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -132,13 +153,6 @@ namespace API_Chat.Migrations
                     b.HasIndex("ConversationsId");
 
                     b.ToTable("ContactsConversations");
-                });
-
-            modelBuilder.Entity("API_Chat.Model.Contacts", b =>
-                {
-                    b.HasOne("API_Chat.Model.Contacts", null)
-                        .WithMany("ContactFriends")
-                        .HasForeignKey("ContactsId");
                 });
 
             modelBuilder.Entity("API_Chat.Model.Messages", b =>
@@ -180,8 +194,6 @@ namespace API_Chat.Migrations
 
             modelBuilder.Entity("API_Chat.Model.Contacts", b =>
                 {
-                    b.Navigation("ContactFriends");
-
                     b.Navigation("Notifications");
                 });
 

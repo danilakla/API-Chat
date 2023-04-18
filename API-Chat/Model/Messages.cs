@@ -11,7 +11,9 @@ namespace API_Chat.Model
         public string message_text { get; set; } = string.Empty;
         [Required]
         public string FromWhom { get; set; }= string.Empty;
-        public int ConversationsId { get; set; }
+        public DateTime Time { get; set; }
+
+		public int ConversationsId { get; set; }
 
         public Conversations Conversations { get; set; }
     }

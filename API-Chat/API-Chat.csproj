@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.14" />
@@ -22,8 +24,22 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.96" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Новая папка\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EventBus">
+      <HintPath>..\..\..\..\..\asp\RabbitMqCustomLib\RabbitMqCustomLib\bin\Debug\net6.0\EventBus.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMqCustomLib">
+      <HintPath>..\..\..\..\..\asp\RabbitMqCustomLib\RabbitMqCustomLib\bin\Debug\net6.0\RabbitMqCustomLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

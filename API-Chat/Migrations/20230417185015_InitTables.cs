@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace API_Chat.Migrations
 {
-    public partial class InitTable : Migration
+    public partial class InitTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,16 +16,14 @@ namespace API_Chat.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContactsId = table.Column<int>(type: "int", nullable: true)
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BroadcastText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Contacts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Contacts_Contacts_ContactsId",
-                        column: x => x.ContactsId,
-                        principalTable: "Contacts",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -33,7 +32,9 @@ namespace API_Chat.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ConversationName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ConversationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsGroup = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,7 +48,7 @@ namespace API_Chat.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MessageText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ToWhom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FromWhom = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContactsId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -94,6 +95,7 @@ namespace API_Chat.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     message_text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FromWhom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ConversationsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -106,11 +108,6 @@ namespace API_Chat.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Contacts_ContactsId",
-                table: "Contacts",
-                column: "ContactsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContactsConversations_ConversationsId",

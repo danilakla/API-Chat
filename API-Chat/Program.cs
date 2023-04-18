@@ -1,6 +1,11 @@
 
 using API_Chat.Data;
+using API_Chat.Extensions;
 using API_Chat.Hubs;
+using API_Chat.IntegrationEvents.EventHandling;
+using API_Chat.IntegrationEvents.Events;
+using Autofac.Extensions.DependencyInjection;
+using EventBus.Abstructions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 ConfigurationManager configuration = builder.Configuration;
 
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Services.AddCustomServices();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<ApplicationContext>(opt =>
@@ -20,6 +27,8 @@ builder.Services.AddDbContext<ApplicationContext>(opt =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSignalR();
+builder.Services.AddIntegrationServices(builder.Configuration);
+builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddStackExchangeRedisCache(redisOptions =>
 {
     redisOptions.Configuration = configuration["AppSettings:Redis"];
@@ -113,5 +122,11 @@ app.UseAuthorization();
 app.UseCors("M");
 app.MapHub<Chat>("/chathub");
 app.MapControllers();
-
+ConfigureEventBus(app);
 app.Run();
+
+void ConfigureEventBus(IApplicationBuilder app)
+{
+	var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+	eventBus.Subscribe<CreateProfileBaseOnUniverDataIntegrationEvent, CreateContactsIntegrationEventHandler>();
+}

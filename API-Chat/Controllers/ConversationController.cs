@@ -27,10 +27,12 @@ namespace API_Chat.Controllers
         [HttpGet("loadFriend")]
         public async Task<ActionResult<List<CreateFriendDto>>> GetFriends(string user)
         {
+            var ver=await db.Contacts.Include(e=>e.Conversations).Where(e=>e.Equals(user)).SelectMany(e=>e.Conversations).ToArrayAsync();
             var vc=await db.Contacts.SelectMany(e=>e.Conversations).Include(e=>e.Contacts).Where(e=>e.ConversationName.Contains(user)).ToListAsync();
             List<CreateFriendDto> friendList = new();
             foreach (var item in vc)
             {
+                
                 foreach (var friend in item.Contacts)
                 {
                     if (friend.Name != user)

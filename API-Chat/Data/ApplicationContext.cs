@@ -1,4 +1,5 @@
-﻿using API_Chat.Model;
+﻿using API_Chat.DTO;
+using API_Chat.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Chat.Data
@@ -10,8 +11,9 @@ namespace API_Chat.Data
 
 
         }
+		public DbSet<FriendDTO>  friendDTOs{ get; set; }
 
-        public DbSet<Contacts> Contacts{ get; set; }
+		public DbSet<Contacts> Contacts{ get; set; }
         public DbSet<Conversations> Conversations { get; set; }
         public DbSet<Messages> Messages { get; set; }
         public DbSet<Notifications> Notifications { get; set; }
