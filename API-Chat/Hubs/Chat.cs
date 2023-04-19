@@ -62,13 +62,13 @@ namespace API_Chat.Hubs
 		}
 		public async Task SendMessage(CreateMessageDTO createMessageDTO)
         {
-            
+			string FromWhom = identityClaimsService.GetUserEmail(Context.User.Identities.First());
 			var message = new Messages {MessageText=createMessageDTO.MessageText,
-            Time=createMessageDTO.TimeSendMessage};
+            Time=DateTime.Now,FromWhom=FromWhom};
                 await chatService.AddMessage(message, createMessageDTO.nameRoom);
 
 
-                await Clients.Group(createMessageDTO.FromWhom).SendAsync("ReceiveMessage",message);
+                await Clients.Group(FromWhom).SendAsync("ReceiveMessage",message);
 
                 await Clients.Group(createMessageDTO.ToWhom).SendAsync("ReceiveMessage", message);
             
