@@ -17,7 +17,7 @@ namespace API_Chat.Controllers
 		{
 			this.chatService = chatService;
 		}
-		[HttpGet("get-messages/{roomName}")]
+		[HttpGet("/get-messages/{roomName}")]
 		public async Task<List<Messages>> GetMessages(string roomName)
 		{
 			try

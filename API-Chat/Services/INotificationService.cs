@@ -7,5 +7,8 @@ namespace API_Chat.Services
 	{
 		Task<List<Notifications>>GetNotifications(string email);
 		Task SendNotification(CreateNotificationDTO  createNotificationDTO);
+
+		Task DeleteNotification(int Id);
+
 	}
 }

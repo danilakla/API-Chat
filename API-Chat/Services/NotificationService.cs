@@ -65,5 +65,12 @@ namespace API_Chat.Services
 				throw;
 			}	
 		}
+
+		public async Task DeleteNotification(int Id)
+		{
+			var notificationDelete = await applicationContext.Notifications.FindAsync(Id);
+			 applicationContext.Notifications.Remove(notificationDelete);
+				await applicationContext.SaveChangesAsync();
+		}
 	}
 }

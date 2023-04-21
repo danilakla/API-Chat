@@ -58,5 +58,22 @@ namespace API_Chat.Controllers
 			}
 	
 		}
+
+		[HttpDelete("/delete-notification/{id:int}")]
+		public async Task SendNotification(int id)
+		{
+			try
+			{
+
+				await notificationService.DeleteNotification(id);
+
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+
+		}
 	}
 }
