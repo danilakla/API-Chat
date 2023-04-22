@@ -6,6 +6,9 @@ namespace API_Chat.Services
     public interface IFriendService
 	{
 		Task AddFriend(AcceptNoficationDTO acceptNoficationDTO);
+
+		Task DeleteFriend(string roomName);
+
 		Task<List<FriendDTO>> GetFriends(string email);
 	}
 }

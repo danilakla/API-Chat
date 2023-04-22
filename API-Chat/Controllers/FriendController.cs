@@ -58,5 +58,21 @@ namespace API_Chat.Controllers
 
 		}
 
+		[HttpDelete("/delete-friend/{roomName}")]
+		public async Task DeleteFriend(string roomName)
+		{
+			try
+			{
+				await friendService.DeleteFriend(roomName);
+
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+
+		}
+
 	}
 }

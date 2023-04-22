@@ -47,6 +47,21 @@ namespace API_Chat.Services
 
 		}
 
+		public async Task DeleteFriend(string roomName)
+		{
+			try
+			{
+				var conversation = await applicationContext.Conversations.Where(e=>e.ConversationName==roomName).FirstOrDefaultAsync();
+				applicationContext.Conversations.Remove(conversation);
+				await applicationContext.SaveChangesAsync();	
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+
 		public async Task<List<FriendDTO>> GetFriends(string email)
 		{
 			try
