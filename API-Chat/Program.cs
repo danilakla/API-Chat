@@ -1,6 +1,7 @@
 
 using API_Chat.Data;
 using API_Chat.Extensions;
+using API_Chat.gRPC;
 using API_Chat.Hubs;
 using API_Chat.Infrastucture;
 using API_Chat.IntegrationEvents.EventHandling;
@@ -20,6 +21,7 @@ ConfigurationManager configuration = builder.Configuration;
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Services.AddCustomServices();
+builder.Services.AddGrpc();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddDbContext<ApplicationContext>(opt =>
@@ -123,6 +125,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("M");
 app.MapHub<Chat>("/chathub");
+app.MapGrpcService<ProfileGrpcService>();
+
 app.MapControllers();
 ConfigureEventBus(app);
 app.Run();

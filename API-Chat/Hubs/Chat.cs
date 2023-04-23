@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 namespace API_Chat.Hubs
 {
+	[Authorize]
     public class Chat:Hub
     {
 		private readonly IChatService chatService;
@@ -20,46 +21,31 @@ namespace API_Chat.Hubs
 			this.chatService = chatService;
 			this.identityClaimsService = identityClaimsService;
 		}
-        public override Task OnConnectedAsync()
+        public async override Task OnConnectedAsync()
         {
-            string email = identityClaimsService.GetUserEmail(Context.User.Identities.First());
+			try
+			{
+			string email = identityClaimsService.GetUserEmail(Context.User.Identities.First());
 
 
-			Groups.AddToGroupAsync(Context.ConnectionId, email);
+			await Groups.AddToGroupAsync(Context.ConnectionId, email);
+				await base.OnConnectedAsync();
 
-            return base.OnConnectedAsync(); 
+				
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+          
         }
 
 
-		//public string MessageText { get; set; }
-		//public DateTime TimeSendMessage { get; set; }
-		//public string FromWhom { get; set; }
-		//public string ToWhom { get; set; }
-		//public string nameRoom
-		//{
-		//	get; set;
-		//string MessageText, string FromWhom, string ToWhom, string nameRoom
-		//var createMessageDTO = new CreateMessageDTO
-		//{
+		
+		
 
-		//	FromWhom = FromWhom,
-		//	MessageText = MessageText,
-		//	nameRoom = nameRoom,
-		//	TimeSendMessage = DateTime.Now,
-		//	ToWhom = ToWhom
-		//};
-		public class Test
-		{
-			public int A { get; set; }
-			public string B { get; set; }
-			public DateTime Temes { get; set; } = DateTime.Now;
-		}
-
-		public async Task TestOne(Test createMessageDTO)
-		{
-			Console.WriteLine("Dsd");
-
-		}
+		
 		public async Task SendMessage(CreateMessageDTO createMessageDTO)
         {
 			string FromWhom = identityClaimsService.GetUserEmail(Context.User.Identities.First());

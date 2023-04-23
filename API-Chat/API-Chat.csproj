@@ -8,8 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Proto\profile.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="6.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
+    <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.52.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.14" />
@@ -31,6 +37,12 @@
 
   <ItemGroup>
     <Folder Include="Новая папка\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Proto\profile.proto" GrpcServices="Server" ProtoCompile="True">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Protobuf>
   </ItemGroup>
 
   <ItemGroup>

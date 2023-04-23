@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "ProfileService.Proto";
+
+package ProfileService;
+
+service Profile{
+	rpc UpdateIcon (Icon)  returns (Empty);
+	rpc UpdateBackround (Back) returns (Empty);
+
+}
+
+
+message Icon{
+	bytes photo=1;
+	string email=2;
+
+}
+
+message Back{
+	bytes photo=1;
+	string email=2;
+
+}
+message Empty{
+	bytes photo=1;
+
+}
+
+
+
