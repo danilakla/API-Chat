@@ -60,7 +60,7 @@ namespace API_Chat.Controllers
 		}
 
 		[HttpDelete("/delete-notification/{id:int}")]
-		public async Task SendNotification(int id)
+		public async Task DeleteNotification(int id)
 		{
 			try
 			{
@@ -75,5 +75,22 @@ namespace API_Chat.Controllers
 			}
 
 		}
-	}
+
+        [HttpGet("/get-notification/{id:int}")]
+        public async Task<Notifications> GetNotification(int id)
+        {
+            try
+            {
+
+               var notification= await notificationService.GetNotification(id);
+				return notification;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+    }
 }

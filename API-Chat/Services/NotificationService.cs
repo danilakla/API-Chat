@@ -23,6 +23,10 @@ namespace API_Chat.Services
 		{
 			try
 			{
+				var isExistNot = await applicationContext.Notifications.Where(e => (e.FromWhom == createNotificationDTO.FromWhom)&&(e.ContactsId==createNotificationDTO.FriendId)).FirstOrDefaultAsync();
+				if(isExistNot is not null ) {
+					throw new Exception("You've alreadt sent the notification");
+				}
 				var user = await applicationContext.Contacts.Include(e => e.Notifications).Where(e=>e.Id==createNotificationDTO.FriendId).FirstOrDefaultAsync();
 				var friends = await friendService.GetFriends(user.Email);
 				if(friends is not null) { 
@@ -68,9 +72,32 @@ namespace API_Chat.Services
 
 		public async Task DeleteNotification(int Id)
 		{
-			var notificationDelete = await applicationContext.Notifications.FindAsync(Id);
+			try
+			{
+	var notificationDelete = await applicationContext.Notifications.FindAsync(Id);
 			 applicationContext.Notifications.Remove(notificationDelete);
 				await applicationContext.SaveChangesAsync();
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		
 		}
-	}
+
+        public async Task<Notifications>GetNotification(int Id)
+        {
+			try
+			{
+                var notification = await applicationContext.Notifications.FindAsync(Id);
+				return notification;
+            }
+            catch (Exception)
+			{
+
+				throw;
+			}
+        }
+    }
 }

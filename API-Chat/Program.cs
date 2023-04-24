@@ -6,6 +6,7 @@ using API_Chat.Hubs;
 using API_Chat.Infrastucture;
 using API_Chat.IntegrationEvents.EventHandling;
 using API_Chat.IntegrationEvents.Events;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using EventBus.Abstructions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,6 +32,7 @@ builder.Services.AddDbContext<ApplicationContext>(opt =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IdentityClaimsService>();
+
 builder.Services.AddIntegrationServices(builder.Configuration);
 builder.Services.AddEventBus(builder.Configuration);
 builder.Services.AddStackExchangeRedisCache(redisOptions =>
@@ -62,8 +64,8 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            string accessToken="";
-            if (context.Request.Headers.Authorization.ToString()=="")
+            string accessToken = "";
+            if (context.Request.Headers.Authorization.ToString() == "")
             {
 
             }
@@ -85,17 +87,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(o =>
+builder.Services.AddCors(options =>
 {
-    o.AddPolicy("M", b =>
-    {
-        b
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials();
-
-        
-    });
+	options.AddPolicy("CorsPolicy",
+		builder => builder
+			.AllowAnyMethod()
+			.AllowCredentials()
+			.SetIsOriginAllowed((host) => true)
+			.AllowAnyHeader());
 });
 
 var app = builder.Build();
@@ -108,6 +107,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.Use(async (context, next) =>
 {
@@ -123,7 +123,6 @@ app.Use(async (context, next) =>
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("M");
 app.MapHub<Chat>("/chathub");
 app.MapGrpcService<ProfileGrpcService>();
 
