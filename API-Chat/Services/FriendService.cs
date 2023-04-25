@@ -68,7 +68,7 @@ namespace API_Chat.Services
 			{
 				var user = await applicationContext.Contacts.Where(e => e.Email.Equals(email)).FirstOrDefaultAsync();
 
-				var friends = await applicationContext.friendDTOs.FromSqlInterpolated<FriendDTO>($"select Name,LastName, Photo, ConversationName, Email ,Contacts.Id from ContactsConversations  JOIN Conversations ON ContactsConversations.ConversationsId=Conversations.Id JOIN Contacts ON ContactsConversations.ContactsId=Contacts.Id where ConversationName IN( Select ConversationName from Conversations as C Join ContactsConversations AS CC On CC.ConversationsId=C.Id where CC.ContactsId={user.Id} ) AND Contacts.Id  <> {user.Id} ").ToListAsync();
+				var friends = await applicationContext.friendDTOs.FromSqlInterpolated<FriendDTO>($"select Name,LastName, Photo, ConversationName, Email ,Contacts.Id from ContactsConversations  JOIN Conversations ON ContactsConversations.ConversationsId=Conversations.Id JOIN Contacts ON ContactsConversations.ContactsId=Contacts.Id where ConversationName IN( Select ConversationName from Conversations as C Join ContactsConversations AS CC On CC.ConversationsId=C.Id where CC.ContactsId={user.Id} ) AND Contacts.Id  <> {user.Id} AND IsGroup=0").ToListAsync();
 
 				return friends;
 			}

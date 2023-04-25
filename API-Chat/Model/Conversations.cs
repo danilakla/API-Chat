@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API_Chat.Model
 {
@@ -10,8 +11,8 @@ namespace API_Chat.Model
 		public string RoomName{ get; set; } = string.Empty;
 
 		public bool IsGroup { get; set; }
-
-		public List<Contacts> Contacts { get; set; }
+        [JsonIgnore]
+        public List<Contacts> Contacts { get; set; }
         public List<Messages> Messages { get; set; } 
 
 

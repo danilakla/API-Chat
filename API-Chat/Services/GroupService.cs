@@ -8,10 +8,12 @@ namespace API_Chat.Services
     public class GroupService : IGroupService
     {
         private readonly ApplicationContext applicationContext;
+        private readonly IChatService chatService;
 
-        public GroupService(ApplicationContext applicationContext)
+        public GroupService(ApplicationContext applicationContext, IChatService chatService)
         {
             this.applicationContext = applicationContext;
+            this.chatService = chatService;
         }
 
         public async Task AcceptInviteGrop(string roomName, string emailForConversationName, string ownEmail)
@@ -23,6 +25,7 @@ namespace API_Chat.Services
                           .FirstOrDefaultAsync();
                 var user = await applicationContext.Contacts.Include(e => e.Conversations).Where(e => e.Email == ownEmail).FirstOrDefaultAsync();
                 user.Conversations.Add(conversation);
+                await DeleteGropAccept(user.Id);
                 await applicationContext.SaveChangesAsync();
             }
             catch (Exception)
@@ -31,6 +34,19 @@ namespace API_Chat.Services
                 throw;
             }
 
+        }
+        private async Task DeleteGropAccept(int id)
+        {
+            try
+            {
+                var notificationDelete = await applicationContext.Notifications.Where(e=>e.ContactsId== id).FirstOrDefaultAsync();
+                applicationContext.Notifications.Remove(notificationDelete);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task CreateGrop(CreateGropDto createGropDto)
@@ -55,7 +71,8 @@ namespace API_Chat.Services
                     MessageText = createGropDto.Desription,
                     RoomName = createGropDto.RoomName,
                 };
-                await SendBroadcastNotification(createGropDto.SearchString, notificationGr);
+                await chatService.CreateRoom(conversation.ConversationName);
+                await SendBroadcastNotification(createGropDto.SearchString, notificationGr, initiater.Email);
                 await applicationContext.SaveChangesAsync();
 
             }
@@ -67,12 +84,15 @@ namespace API_Chat.Services
 
         }
 
-        public async Task<List<Conversations>> GetGroups()
+        public async Task<List<Conversations>> GetGroups(string email)
         {
             try
             {
-                var user = await applicationContext.Contacts.Include(e => e.Conversations).FirstOrDefaultAsync();
-                var groups = user.Conversations.Where(e=>e.IsGroup=true).ToList();
+                var user = await applicationContext.Contacts
+                    .Include(e => e.Conversations)
+                    .Where(e=>e.Email==email)
+                    .FirstOrDefaultAsync();
+                var groups = user.Conversations.Where(e=>e.IsGroup==true).ToList();
                 return groups;
             }
             catch (Exception)
@@ -82,7 +102,7 @@ namespace API_Chat.Services
             }
         }
 
-        private async Task SendBroadcastNotification(string searchStr, Notifications notifications)
+        private async Task SendBroadcastNotification(string searchStr, Notifications createGropDto,string email)
         {
             try
             {
@@ -92,7 +112,14 @@ namespace API_Chat.Services
                                .ToListAsync();
                 foreach (var contact in contacts)
                 {
-                    contact.Notifications.Add(notifications);
+                    if (contact.Email == email) continue;
+                    var notification = new Notifications
+                    {
+                        FromWhom = createGropDto.FromWhom,
+                        MessageText = createGropDto.MessageText,
+                        RoomName = createGropDto.RoomName,
+                    };
+                    contact.Notifications.Add(notification);
                 }
             }
             catch (Exception)

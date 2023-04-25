@@ -10,59 +10,82 @@ using Newtonsoft.Json;
 
 namespace API_Chat.Hubs
 {
-	[Authorize]
-    public class Chat:Hub
+    [Authorize]
+    public class Chat : Hub
     {
-		private readonly IChatService chatService;
-		private readonly IdentityClaimsService identityClaimsService;
+        private readonly IChatService chatService;
+        private readonly IdentityClaimsService identityClaimsService;
 
-		public Chat(IChatService chatService, IdentityClaimsService identityClaimsService)
+        public Chat(IChatService chatService, IdentityClaimsService identityClaimsService)
         {
-			this.chatService = chatService;
-			this.identityClaimsService = identityClaimsService;
-		}
-		
+            this.chatService = chatService;
+            this.identityClaimsService = identityClaimsService;
+        }
+
         public async override Task OnConnectedAsync()
         {
-			try
-			{
-			string email = identityClaimsService.GetUserEmail(Context.User.Identities.First());
+            try
+            {
+                string email = identityClaimsService.GetUserEmail(Context.User.Identities.First());
 
 
-			await Groups.AddToGroupAsync(Context.ConnectionId, email);
-				await base.OnConnectedAsync();
+                await Groups.AddToGroupAsync(Context.ConnectionId, email);
+                await base.OnConnectedAsync();
 
-				
-			}
-			catch (Exception)
-			{
 
-				throw;
-			}
-          
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
 
-		
-		
-
-		
-		public async Task SendMessage(CreateMessageDTO createMessageDTO)
+        public async Task JoinGroup(string roomName)
         {
-			string FromWhom = identityClaimsService.GetUserEmail(Context.User.Identities.First());
-			var message = new Messages {MessageText=createMessageDTO.MessageText,
-            Time=DateTime.Now,FromWhom=FromWhom};
-                await chatService.AddMessage(message, createMessageDTO.nameRoom);
+            string FromWhom = identityClaimsService.GetUserEmail(Context.User.Identities.First());
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
 
-                await Clients.Group(FromWhom).SendAsync("ReceiveMessage",message);
+
+
+
+
+
+
+        }
+
+
+
+        public async Task SendMessage(CreateMessageDTO createMessageDTO)
+        {
+            string FromWhom = identityClaimsService.GetUserEmail(Context.User.Identities.First());
+            var message = new Messages
+            {
+                MessageText = createMessageDTO.MessageText,
+                Time = DateTime.Now,
+                FromWhom = FromWhom
+            };
+            await chatService.AddMessage(message, createMessageDTO.nameRoom);
+
+            if (createMessageDTO.ToWhom == createMessageDTO.nameRoom)
+            {
+                await Clients.Group(createMessageDTO.nameRoom).SendAsync("ReceiveMessage", message);
+
+            }
+            else
+            {
+                await Clients.Group(FromWhom).SendAsync("ReceiveMessage", message);
 
                 await Clients.Group(createMessageDTO.ToWhom).SendAsync("ReceiveMessage", message);
-            
-           
-         
 
-            
+            }
+
+
+
+
 
 
         }

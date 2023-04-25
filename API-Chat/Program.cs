@@ -71,8 +71,15 @@ builder.Services.AddAuthentication(options =>
             }
             else
             {
+                if (context.Request.Headers.Authorization.ToString().Split(" ").Length < 2)
+                {
 
+                }
+                else
+                {
                 accessToken = context.Request.Headers.Authorization.ToString().Split(" ")[1];
+
+                }
             }
             var test = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API_Chat.Model
 {
@@ -14,6 +15,7 @@ namespace API_Chat.Model
 
         public string FromWhom { get; set; }
         public int ConversationsId { get; set; }
+        [JsonIgnore]
 
         public Conversations Conversations { get; set; }
     }

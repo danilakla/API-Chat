@@ -16,7 +16,9 @@ namespace API_Chat.Extensions
 			services.AddScoped<IContactService, ContactService>();
 			services.AddScoped<IFriendService, FriendService>();
 			services.AddScoped<INotificationService, NotificationService>();
-			return services;
+            services.AddScoped<IGroupService, GroupService>();
+
+            return services;
 		}
 		public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
 		{
