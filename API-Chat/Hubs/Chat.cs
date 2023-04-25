@@ -21,6 +21,7 @@ namespace API_Chat.Hubs
 			this.chatService = chatService;
 			this.identityClaimsService = identityClaimsService;
 		}
+		
         public async override Task OnConnectedAsync()
         {
 			try
